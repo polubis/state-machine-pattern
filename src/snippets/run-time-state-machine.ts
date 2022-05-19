@@ -1,19 +1,5 @@
 import { CoffeExpressState } from "./compile-time-state-machine";
 
-export const StateChange = (state: CoffeExpressState) => {
-  return {
-    try: (key: CoffeExpressState["key"]) => {
-      if (key !== state.key) {
-        throw new Error(
-          `Invalid state change detected: from: ${state.key}, to: ${key}`
-        );
-      }
-
-      return;
-    }
-  };
-};
-
 export const CoffeExpressStateMachine = (
   state: CoffeExpressState = { key: "idle" }
 ) => {
