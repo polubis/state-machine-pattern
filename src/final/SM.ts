@@ -54,19 +54,44 @@ type State<C extends Obj> = {
       };
 };
 
+interface StateMachine<C extends Obj, K extends { key: keyof C; data?: any }> {
+  get: () => State<C>[K["key"]];
+  is: <CK extends keyof C>(key: CK) => boolean;
+}
+
+type NextReturn<C extends Obj, K extends { key: keyof C; data?: any }> = {
+  [Key in keyof C]: () => NextReturn<C, K> & StateMachine<C, K>;
+};
+
+// sm means state machine
 export const SM = <C extends Obj, K extends { key: keyof C; data?: any }>(
   config: C,
   initState: State<C>[K["key"]]
 ) => {
   return (...predicates: Predicate<C>[]) => {
     const next = (currentState: State<C>[K["key"]]) => {
-      const enhancedConfig = Object.entries(
-        config
-      ).reduce((acc, [key, fn]) => {}, {});
+      const enhancedConfig = Object.entries(config).reduce<NextReturn<C, K>>(
+        (acc, [key, fn]) => {
+          return {
+            ...acc,
+            [key]: (arg?: unknown) => {
+              const data = fn(arg);
+              const newState = { key } as State<C>[K["key"]];
+
+              if (data) {
+                (newState as any).data = data;
+              }
+
+              return next(newState);
+            }
+          };
+        },
+        {} as NextReturn<C, K>
+      );
 
       return {
-        ...config,
-        get: <CK extends keyof C>(key: CK) => initState as State<C>[CK],
+        ...(enhancedConfig as NextReturn<C, K>),
+        get: () => currentState,
         is: <CK extends keyof C>(key: CK) => key === initState.key
       };
     };

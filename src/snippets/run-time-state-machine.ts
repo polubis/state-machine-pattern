@@ -35,5 +35,6 @@ if (state.key === "graining") {
 }
 
 if (state.key === "done") {
+  // state.coffe can be used here
   // Show success alert
 }
