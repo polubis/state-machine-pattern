@@ -1,2 +1,2 @@
-# state-machine-pattern
+# how-to-mock
 Created with CodeSandbox
