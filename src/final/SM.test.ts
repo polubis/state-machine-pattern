@@ -29,7 +29,10 @@ describe("SM()", () => {
     });
   });
 
-  it("allows to chain state changes from config", () => {
-    expect(SM(CONFIG, IDLE)().loaded(USER).get()).toEqual(LOADED);
+  it("allows to chain state changes for different scenarios", () => {
+    expect(SM(CONFIG, IDLE)().loading().loaded(USER).get()).toEqual(LOADED);
+    expect(SM(CONFIG, IDLE)().loading().loadFail(LOAD_FAIL.data).get()).toEqual(
+      LOAD_FAIL
+    );
   });
 });
