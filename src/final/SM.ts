@@ -51,7 +51,7 @@ export const SM = <C extends Obj, K extends { key: keyof C; data?: unknown }>(
 
     const next = () => {
       const entries = Object.keys(config) as (keyof C)[];
-      const enhancedConfig = {} as NextReturn<C, K>;
+      const enhancedConfig = {} as Record<keyof C, (data?: unknown) => void>;
 
       entries.forEach((key) => {
         enhancedConfig[key] = (data?: unknown) => {
@@ -68,7 +68,7 @@ export const SM = <C extends Obj, K extends { key: keyof C; data?: unknown }>(
       });
 
       return {
-        ...enhancedConfig,
+        ...(enhancedConfig as NextReturn<C, K>),
         get: () => currentState,
         is: <CK extends keyof C>(key: CK) => key === initState.key
       };
