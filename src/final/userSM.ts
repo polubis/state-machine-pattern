@@ -30,8 +30,6 @@
 
 // const createSM = <C extends StateMachineConfig>(config: StateMachineConfig<S>) => {};
 
-import { User } from "../services";
-
 type Obj = {
   [key: string]: (() => void) | ((data: any) => any);
 };
@@ -80,7 +78,7 @@ export const SM = <C extends Obj, K extends { key: keyof C; data?: any }>(
 const test = {
   idle: () => {},
   loading: () => {},
-  loaded: (data: User) => data,
+  loaded: (data: { username: string }) => data,
   loaded2: (data: { id: number }) => data,
   error: () => {}
 };
@@ -95,4 +93,4 @@ const userSM = SM(test, { key: "idle" })(
 type s = GetFirstArgumentOfAnyFunction<typeof test["loaded"]>;
 
 userSM.is("loading");
-userSM.get("loaded");
+userSM.get("loaded").data;
