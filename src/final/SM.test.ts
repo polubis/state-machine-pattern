@@ -45,6 +45,17 @@ describe("SM()", () => {
     };
 
     expect(() => SM(CONFIG, IDLE)(GUARDS).loaded(USER)).toThrow();
+    expect(() =>
+      SM(CONFIG, IDLE)(GUARDS).idle().loaded(USER).idle().loading()
+    ).toThrow();
     expect(() => SM(CONFIG, IDLE)(GUARDS).loading()).not.toThrow();
+    expect(() =>
+      SM(CONFIG, IDLE)(GUARDS)
+        .loading()
+        .loaded(USER)
+        .idle()
+        .loading()
+        .loadFail(LOAD_FAIL.data)
+    ).not.toThrow();
   });
 });

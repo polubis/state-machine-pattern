@@ -13,7 +13,7 @@ export type Guards<C extends ConfigObject> = {
   [K in keyof C]?: keyof C | (keyof C)[];
 };
 
-type State<C extends ConfigObject> = {
+export type State<C extends ConfigObject> = {
   [K in keyof C]: C[K] extends () => void
     ? { key: K }
     : {
@@ -22,7 +22,7 @@ type State<C extends ConfigObject> = {
       };
 };
 
-interface ConstantStateMachineMethods<
+export interface ConstantStateMachineMethods<
   C extends ConfigObject,
   K extends { key: keyof C; data?: unknown }
 > {
@@ -30,11 +30,14 @@ interface ConstantStateMachineMethods<
   is: <CK extends keyof C>(key: CK) => boolean;
 }
 
-type PickNextFunctionSignature<S, R> = S extends { key: string; data: infer D }
+export type PickNextFunctionSignature<S, R> = S extends {
+  key: string;
+  data: infer D;
+}
   ? (data: D) => R
   : () => R;
 
-type StateMachine<
+export type StateMachine<
   C extends ConfigObject,
   K extends { key: keyof C; data?: unknown }
 > = {
@@ -57,7 +60,6 @@ const toGuardsArray = <C extends ConfigObject, K extends keyof C>(
   return [];
 };
 
-// State machine factory
 export const SM = <
   C extends ConfigObject,
   K extends { key: keyof C; data?: unknown }
@@ -74,8 +76,14 @@ export const SM = <
 
       entries.forEach((key) => {
         enhancedConfig[key] = (data?: unknown) => {
-          if (toGuardsArray(guards, key).includes(currentState.key)) {
-            throw new Error("Invalid state change detecte");
+          const guardsArray = toGuardsArray(guards, key);
+
+          if (guardsArray.includes(currentState.key)) {
+            throw new Error(
+              `Invalid state change detected, from: ${
+                currentState.key
+              } to: ${key} but allowed ${guardsArray.join(", ")}`
+            );
           }
 
           const newState = { key } as State<C>[K["key"]];
