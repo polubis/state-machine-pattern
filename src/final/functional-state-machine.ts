@@ -1,11 +1,5 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
 // Function declaratins are hoisted so it's safe
-function Idle() {
-  return {
-    key: "idle" as const,
-    Loading
-  };
-}
 
 function Loading() {
   return {
@@ -27,6 +21,13 @@ function LoadFail() {
   return {
     Idle,
     key: "loadFail" as const
+  };
+}
+
+export function Idle() {
+  return {
+    key: "idle" as const,
+    Loading
   };
 }
 
