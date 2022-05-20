@@ -1,4 +1,4 @@
-import { SM, Guards } from "./SM";
+import { SM, Guards } from "./generic-state-machine";
 
 describe("SM()", () => {
   type User = { id: number; username: string };
