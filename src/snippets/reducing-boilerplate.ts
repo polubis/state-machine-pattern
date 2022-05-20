@@ -14,8 +14,6 @@ type Fns<F> = {
   [K in keyof F]: Fn;
 };
 
-export type Temperature = number;
-
 function State<K extends string, D extends Data<D>, F extends Fns<F>>(
   key: K,
   data: D,
