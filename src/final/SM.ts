@@ -82,7 +82,7 @@ export const SM = <
             throw new Error(
               `Invalid state change detected, from: ${
                 currentState.key
-              } to: ${key} but allowed ${guardsArray.join(", ")}`
+              } to: ${key} but allowed [${guardsArray.join(", ")}]`
             );
           }
 
