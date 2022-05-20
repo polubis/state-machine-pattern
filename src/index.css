@@ -2,17 +2,20 @@
   background: #f2f2f2;
   border-radius: 10px;
   display: flex;
-  height: 500px;
-  width: 500px;
   align-items: center;
   justify-content: center;
   margin-top: 20px;
 }
 
+.express {
+  position: relative;
+}
+
 .arrow {
-  transition: 0.3 ease-in-out transform;
-  transform-origin: 50px 50px;
-  transform: rotate(100px);
+  position: absolute;
+  top: 24px;
+  left: 32px;
+  transform: rotate(180deg);
 }
 
 .dot-red {
