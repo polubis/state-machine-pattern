@@ -52,7 +52,10 @@ function Done() {
   };
 }
 
-// Same effect as in class based approach.
+// Syntax to reduce boilerplate
+// Creating union type for 100% typesafety
+const STATES = [Idle, PowerOn, Graining, Warming, Making, Done] as const;
+export type CoffeeExpressState = ReturnType<typeof STATES[number]>;
 
 // Less code, easier to implement next state,
 // as benefit state tree on last function hover.

@@ -1,63 +1,59 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
 
+interface Stateable {
+  key: string;
+}
+
+type Data<D> = {
+  [K in keyof D]: D[K];
+};
+
+type Fn = (...args: any[]) => Stateable;
+
+type Fns<F> = {
+  [K in keyof F]: Fn;
+};
+
 export type Temperature = number;
 
-export type CoffeeExpressState =
-  | ReturnType<typeof Idle>
-  | ReturnType<typeof PowerOn>
-  | ReturnType<typeof Graining>
-  | ReturnType<typeof Warming>
-  | ReturnType<typeof Making>
-  | ReturnType<typeof Done>;
+function State<K extends string, D extends Data<D>, F extends Fns<F>>(
+  key: K,
+  data: D,
+  fns: F
+) {
+  return {
+    ...fns,
+    ...data,
+    key
+  };
+}
 
 function Idle() {
-  return {
-    key: "idle" as const,
-    progress: 0,
-    PowerOn
-  };
+  return State("idle", { progress: 0 }, { PowerOn });
 }
 
 function PowerOn() {
-  return {
-    key: "powerOn" as const,
-    progress: 0,
-    Graining
-  };
+  return State("powerOn", { progress: 0 }, { Graining });
 }
 
 function Graining() {
-  return {
-    key: "graining" as const,
-    progress: 20,
-    Warming
-  };
+  return State("graining", { progress: 20 }, { Warming });
 }
 
 function Warming(data: Temperature) {
-  return {
-    key: "warming" as const,
-    data,
-    progress: 40,
-    Making
-  };
+  return State("warming", { progress: 40, data }, { Making });
 }
 
 function Making() {
-  return {
-    key: "making" as const,
-    progress: 75,
-    Done
-  };
+  return State("making", { progress: 75 }, { Done });
 }
 
 function Done() {
-  return {
-    key: "done" as const,
-    progress: 100,
-    Idle
-  };
+  return State("done", { progress: 100 }, { Idle });
 }
+
+const STATES = [Idle, PowerOn, Graining, Warming, Making, Done] as const;
+export type CoffeeExpressState = ReturnType<typeof STATES[number]>;
 
 export function Start(): CoffeeExpressState {
   return Idle();

@@ -1,40 +1,47 @@
 import * as React from "react";
-import { useRef } from "react";
 import { useState } from "react";
-import { useMemo } from "react";
 import { render } from "react-dom";
+import { mergeMap, Subject } from "rxjs";
+import { ExpressComponent } from "./final/express-component";
 
-import {
-  Start,
-  CoffeeExpressState
-} from "./final/coffee-express-state-machine";
+import { Start } from "./final/coffee-express-state-machine";
 
-const delay = (time: number, cb: () => void) => {
-  setTimeout(cb, time);
-};
+import "./index.css";
 
 const useExpress = () => {
-  const [counter, setCounter] = useState(0);
-  const state = useRef(Start());
+  const start = React.useMemo(() => new Subject<void>(), []);
+  const start$ = React.useMemo(() => start.asObservable(), []);
 
-  const turnOnExpress = () => {
-    state.current = state.current.PowerOn();
-    setCounter((prevCounter) => prevCounter + 1);
+  const [state, setState] = useState(Start());
+
+  const turnOn = () => {
+    setState((state) => {
+      return state.key === "idle" ? state.PowerOn() : state;
+    });
   };
 
+  // Klikam po 3 sekundach sie wlaczy
+
+  React.useEffect(() => {
+    const sub = start$.pipe().subscribe();
+
+    return () => {
+      sub.unsubscribe();
+    };
+  }, []);
+
   return {
-    key: state.current.key,
-    progress: state.current.progress,
-    turnOnExpress
+    state,
+    turnOn
   };
 };
 
 function App() {
-  const { key, progress, turnOnExpress } = useExpress();
+  const { state, turnOn } = useExpress();
 
   return (
-    <div onClick={() => turnOnExpress()}>
-      {key}: {progress}
+    <div className="container" onClick={() => turnOn()}>
+      <ExpressComponent />
     </div>
   );
 }
