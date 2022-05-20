@@ -1,4 +1,4 @@
-import { SM } from "./SM";
+import { SM, Guards } from "./SM";
 
 describe("SM()", () => {
   type User = { id: number; username: string };
@@ -34,5 +34,17 @@ describe("SM()", () => {
     expect(SM(CONFIG, IDLE)().loading().loadFail(LOAD_FAIL.data).get()).toEqual(
       LOAD_FAIL
     );
+  });
+
+  it("throws and error when invalid state change detected", () => {
+    const GUARDS: Guards<typeof CONFIG> = {
+      idle: "loading",
+      loading: ["loaded", "loadFail"],
+      loaded: "idle",
+      loadFail: "idle"
+    };
+
+    expect(() => SM(CONFIG, IDLE)(GUARDS).loaded(USER)).toThrow();
+    expect(() => SM(CONFIG, IDLE)(GUARDS).loading()).not.toThrow();
   });
 });
