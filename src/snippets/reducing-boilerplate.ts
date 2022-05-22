@@ -39,8 +39,8 @@ function PowerOn() {
   };
 }
 
-// Also instead of exporting all states you can create facade
-// to hide implementation details
+// Also instead of exporting all states
+// you can create facade to hide implementation details
 export function Start() {
   return Idle();
 }

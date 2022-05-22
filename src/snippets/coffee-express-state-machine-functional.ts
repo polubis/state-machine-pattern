@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
-// Function declaratins are hoisted so it's safe
+// Function declarations are hoisted so it's safe
 
 type Temperature = number;
 
@@ -52,11 +52,9 @@ function Done() {
   };
 }
 
-// Syntax to reduce boilerplate
-// Creating union type for 100% typesafety
+// Creating union type for 100% typesafety.
 const STATES = [Idle, PowerOn, Graining, Warming, Making, Done] as const;
 export type CoffeeExpressState = ReturnType<typeof STATES[number]>;
 
-// Less code, easier to implement next state,
-// as benefit state tree on last function hover.
+// Less code, easier to implement next state.
 Idle().PowerOn().Graining().Warming(100).Making().Done();
